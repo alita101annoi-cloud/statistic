@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สถิติ ม.2 และเครื่องมือสร้างแบบทดสอบ</title>
+<style>
+
+:root{--gold:#ffbd00;--gold2:#f5a900;--navy:#2d3038;--muted:#9296a0;--bg:#f5f5f6;--line:#ececf0;--white:#fff;--green:#20845b;--pink:#ffe8e9}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Tahoma,"Noto Sans Thai",sans-serif;background:var(--bg);color:var(--navy);line-height:1.5}
+header{display:none}
+main{max-width:1500px;margin:0 auto;padding:0;min-height:100vh;display:grid;grid-template-columns:178px minmax(420px,1fr) 250px;background:#fff;box-shadow:0 0 30px #00000008}
+.tabs{grid-column:1;grid-row:1;display:flex;flex-direction:column;gap:8px;padding:24px 18px;border-right:1px solid #f1f1f2;background:#fff;margin:0}
+.tab{border:0;border-radius:10px;padding:11px 12px;text-align:left;font-weight:700;font-size:12px;cursor:pointer;background:transparent;color:#999ba4;box-shadow:none}
+.tab:first-child:before{content:"◉";margin-right:10px}.tab:nth-child(2):before{content:"✎";margin-right:10px}.tab:nth-child(3):before{content:"▣";margin-right:10px}
+.tab.active{background:var(--gold);color:white}
+.panel{display:none;grid-column:2;grid-row:1;padding:26px 22px;background:#f7f7f8;min-width:0}
+.panel.active{display:block}
+#take{grid-column:2}
+.card{background:#fff;border:0;border-radius:13px;padding:18px;margin-bottom:16px;box-shadow:0 2px 12px #242c3b05}
+h2{color:var(--navy);font-size:18px;margin:0 0 14px}h3{font-size:14px;margin:10px 0;color:var(--navy)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:13px}
+label{display:block;font-weight:600;font-size:13px;margin:8px 0 5px}
+input[type=text],input[type=number],textarea,select{width:100%;padding:10px 11px;border:1px solid #e3e5e9;border-radius:8px;font:inherit;font-size:13px;background:white;color:var(--navy)}
+textarea{min-height:72px;resize:vertical}input[type=range]{width:100%;accent-color:var(--gold)}
+button{font:inherit}.btn{border:0;border-radius:8px;padding:10px 14px;background:var(--gold);color:white;font-size:12px;font-weight:700;cursor:pointer;margin:5px 5px 5px 0}.btn.secondary{background:#f0f1f3;color:#535966}.btn.danger{background:#c84f5e}.btn.gold{background:var(--gold);color:white}.btn:disabled{opacity:.5;cursor:not-allowed}
+.statboxes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{border-radius:11px;padding:14px;text-align:center;background:#fff8df;border:1px solid #fff0bb;font-size:12px}.stat strong{display:block;font-size:25px;color:#e8a800;margin-top:5px}
+canvas{width:100%;height:280px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.pill{display:inline-block;padding:3px 9px;border-radius:999px;background:#fff3c8;color:#aa7900;font-size:11px;font-weight:700}
+.question-card{border:1px solid var(--line);border-radius:11px;padding:14px;margin:10px 0;background:#fff}
+.option-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin:7px 0}
+.option-row label{font-weight:400;margin:0;display:flex;align-items:center;gap:7px}
+.answer-area{background:#f5f9ff;border-radius:10px;padding:12px;margin-top:10px}
+.quiz-item{border-bottom:1px solid var(--line);padding:14px 0}.quiz-item:last-child{border-bottom:0}
+.feedback{padding:10px;border-radius:9px;margin-top:8px;font-size:13px}.correct{background:#e2f7eb}.incorrect{background:var(--pink)}
+.small{color:var(--muted);font-size:12px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.hidden{display:none!important}
+footer{display:none}
+main:after{content:"✨ แดชบอร์ดห้องเรียน\A\Aสถิติ ม.2\A\Aค่ากลางของข้อมูล\A\Aแบบทดสอบ\A\Aบันทึกการเรียน\A\A\Aเคล็ดลับวันนี้\Aลองเพิ่มข้อมูลที่สูงผิดปกติ แล้วสังเกตค่าเฉลี่ย";white-space:pre-line;grid-column:3;grid-row:1;padding:30px 20px;background:#fff;border-left:1px solid #f0f0f2;font-size:13px;font-weight:700;line-height:2.5;color:var(--navy)}
+@media(max-width:1000px){main{grid-template-columns:150px minmax(0,1fr)}main:after{display:none}.tabs{padding:18px 12px}.panel{padding:18px}}
+@media(max-width:650px){main{display:flex;flex-direction:column}.tabs{position:sticky;top:0;z-index:5;flex-direction:row;padding:10px;overflow-x:auto;border-bottom:1px solid var(--line)}.tab{white-space:nowrap;padding:10px}.panel{padding:12px}.statboxes{grid-template-columns:1fr}.card{padding:14px}}
+
+</style>
+</head>
+<body>
+<header>
+  <h1>📊 ห้องเรียนคณิตศาสตร์ ม.2</h1>
+  <p>สำรวจค่าเฉลี่ย มัธยฐาน ฐานนิยม พร้อมเครื่องมือสร้างแบบทดสอบด้วยตนเอง</p>
+</header>
+<main>
+  <div class="tabs">
+    <div style="font-size:18px;font-weight:900;margin:0 0 18px 6px;color:#2d3038">Math<span style="color:#ffbd00">.</span><div style="font-size:10px;font-weight:500;color:#a0a2aa">LEARNING DASHBOARD</div></div>
+    <button class="tab active" data-tab="learn">บทเรียนแบบโต้ตอบ</button>
+    <button class="tab" data-tab="builder">สร้างแบบทดสอบเอง</button>
+    <button class="tab" data-tab="take">ทำแบบทดสอบ</button>
+  </div>
+
+  <section id="learn" class="panel active">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 18px;flex-wrap:wrap"><div><div style="font-size:11px;color:#9a9da5">ยินดีต้อนรับสู่ห้องเรียน</div><div style="font-size:23px;font-weight:900">สวัสดีค่ะ นักคณิตศาสตร์ 👋</div></div><div style="background:white;border:1px solid #eee;border-radius:10px;padding:10px 14px;color:#999;font-size:12px">⌕ ค้นหาบทเรียนหรือแบบทดสอบ...</div></div>
+    <div style="background:linear-gradient(110deg,#ffbd00,#ffd64f);border-radius:13px;padding:22px;color:white;margin-bottom:16px"><div style="font-size:20px;font-weight:900">เรียนรู้สถิติให้สนุกขึ้น!</div><div style="font-size:13px;max-width:500px">ทดลองปรับข้อมูล ดูค่ากลางเปลี่ยนแบบเรียลไทม์ และสร้างแบบทดสอบของคุณเองได้ในหน้าเดียว</div></div>
+    <div class="card">
+      <h2>🎯 เป้าหมายการเรียนรู้</h2>
+      <ul><li>อธิบายความหมายของค่าเฉลี่ยเลขคณิต มัธยฐาน และฐานนิยมได้</li><li>คำนวณค่ากลางของข้อมูลชุดหนึ่งได้</li><li>สังเกตผลของการเปลี่ยนแปลงข้อมูลที่มีต่อค่ากลางได้</li></ul>
+    </div>
+    <div class="card">
+      <h2>ทดลองปรับชุดข้อมูล</h2>
+      <p class="small">เลื่อนตัวปรับเพื่อเปลี่ยนคะแนนตัวอย่าง แล้วสังเกตค่ากลางที่คำนวณใหม่ทันที</p>
+      <div class="grid">
+        <div><label for="base">ระดับคะแนนพื้นฐาน: <span id="baseVal">6</span></label><input id="base" type="range" min="1" max="10" value="6"></div>
+        <div><label for="spread">การกระจายของคะแนน: <span id="spreadVal">2</span></label><input id="spread" type="range" min="0" max="5" value="2"></div>
+        <div><label><input id="outlier" type="checkbox"> เพิ่มคะแนนที่สูงผิดปกติ (100)</label><p class="small">ลองสังเกตว่าค่าเฉลี่ยเปลี่ยนไปมากแค่ไหน</p></div>
+      </div>
+      <div class="statboxes">
+        <div class="stat">ค่าเฉลี่ยเลขคณิต<strong id="mean">—</strong></div>
+        <div class="stat">มัธยฐาน<strong id="median">—</strong></div>
+        <div class="stat">ฐานนิยม<strong id="mode">—</strong></div>
+      </div>
+      <h3>แผนภูมิแท่งคะแนน</h3><canvas id="chart" width="900" height="300" aria-label="แผนภูมิแท่งคะแนน"></canvas>
+      <p id="dataText" class="small"></p>
+    </div>
+    <div class="card">
+      <h2>🧠 คำถามท้ายกิจกรรม</h2>
+      <div id="lessonQuestions"></div>
+    </div>
+  </section>
+
+  <section id="builder" class="panel">
+    <div class="card">
+      <h2>📝 สร้างแบบทดสอบด้วยตนเอง</h2>
+      <p>ตั้งชื่อแบบทดสอบ เพิ่มคำถาม เลือกชนิดคำถาม กำหนดเฉลยและคำอธิบาย จากนั้นไปที่แท็บ “ทำแบบทดสอบ” เพื่อทดลองทำได้ทันที</p>
+      <label for="testTitle">ชื่อแบบทดสอบ</label><input id="testTitle" type="text" value="แบบทดสอบ เรื่องสถิติ ม.2" placeholder="เช่น แบบทดสอบเรื่องสถิติ">
+      <div class="grid">
+        <div><label for="newType">ชนิดคำถาม</label><select id="newType"><option value="choice">ปรนัย 4 ตัวเลือก</option><option value="short">คำตอบสั้น</option><option value="tf">ถูก / ผิด</option></select></div>
+        <div><label for="newQuestion">คำถาม</label><textarea id="newQuestion" placeholder="พิมพ์คำถามที่ต้องการ..."></textarea></div>
+      </div>
+      <div id="choiceEditor">
+        <h3>ตัวเลือกและเฉลย</h3>
+        <div class="grid">
+          <div><label for="opt0">ตัวเลือก ก</label><input id="opt0" type="text" placeholder="ตัวเลือก ก"></div>
+          <div><label for="opt1">ตัวเลือก ข</label><input id="opt1" type="text" placeholder="ตัวเลือก ข"></div>
+          <div><label for="opt2">ตัวเลือก ค</label><input id="opt2" type="text" placeholder="ตัวเลือก ค"></div>
+          <div><label for="opt3">ตัวเลือก ง</label><input id="opt3" type="text" placeholder="ตัวเลือก ง"></div>
+        </div>
+        <label for="correctChoice">คำตอบที่ถูกต้อง</label><select id="correctChoice"><option value="0">ก</option><option value="1">ข</option><option value="2">ค</option><option value="3">ง</option></select>
+      </div>
+      <div id="shortEditor" class="hidden">
+        <label for="shortAnswer">คำตอบที่ถูกต้อง (ตรวจโดยเทียบข้อความ)</label><input id="shortAnswer" type="text" placeholder="เช่น 7 หรือ ค่าเฉลี่ย">
+        <p class="small">ระบบจะไม่แยกตัวพิมพ์เล็ก-ใหญ่ และตัดช่องว่างหัวท้ายก่อนตรวจคำตอบ</p>
+      </div>
+      <div id="tfEditor" class="hidden">
+        <label for="tfAnswer">เฉลย</label><select id="tfAnswer"><option value="true">ถูก</option><option value="false">ผิด</option></select>
+      </div>
+      <label for="explanation">คำอธิบาย / เฉลยเพิ่มเติม (ไม่บังคับ)</label><textarea id="explanation" placeholder="อธิบายวิธีคิดหรือเหตุผลของคำตอบ"></textarea>
+      <div class="row"><button class="btn" id="addQuestion">＋ เพิ่มคำถาม</button><button class="btn secondary" id="resetBuilder">เริ่มแบบทดสอบใหม่</button></div>
+      <p id="builderMessage" class="small" aria-live="polite"></p>
+    </div>
+    <div class="card">
+      <div class="row" style="justify-content:space-between"><h2>รายการคำถามในชุดนี้</h2><span class="pill" id="questionCount">0 ข้อ</span></div>
+      <div id="questionList"><p class="small">ยังไม่มีคำถาม เริ่มเพิ่มคำถามได้จากแบบฟอร์มด้านบน</p></div>
+      <div class="row"><button class="btn gold" id="saveTest">บันทึกชุดทดสอบในเบราว์เซอร์นี้</button><button class="btn secondary" id="loadTest">โหลดชุดที่บันทึกไว้</button><button class="btn secondary" id="exportTest">ส่งออกไฟล์ JSON</button><label class="btn secondary" for="importFile" style="cursor:pointer">นำเข้าไฟล์ JSON</label><input id="importFile" type="file" accept=".json,application/json" class="hidden"></div>
+      <p class="small">การบันทึกจะเก็บข้อมูลไว้ในเบราว์เซอร์ของอุปกรณ์นี้เท่านั้น ไม่ได้ส่งไปยังอินเทอร์เน็ต หากเปลี่ยนอุปกรณ์ควรส่งออกไฟล์ JSON เก็บไว้</p>
+    </div>
+  </section>
+
+  <section id="take" class="panel">
+    <div class="card">
+      <h2 id="takeTitle">แบบทดสอบ</h2>
+      <p class="small">ตอบทุกข้อแล้วกดตรวจคำตอบ ระบบจะให้คะแนนอัตโนมัติและแสดงเฉลยพร้อมคำอธิบาย</p>
+      <div id="takeQuestions"></div>
+      <div class="row"><button class="btn" id="gradeTest">ตรวจคำตอบ</button><button class="btn secondary" id="clearAnswers">ล้างคำตอบ</button></div>
+      <div id="scoreResult" aria-live="polite"></div>
+    </div>
+  </section>
+</main>
+<footer>สื่อการเรียนรู้แบบไฟล์ HTML ใช้งานออฟไลน์ได้ • ครูสามารถแก้ไขและสร้างแบบทดสอบของตนเองได้</footer>
+<script>
+const $=id=>document.getElementById(id);
+let questions=[
+ {type:"choice",q:"ข้อมูล 4, 6, 8 มีค่าเฉลี่ยเลขคณิตเท่าใด",options:["4","6","8","18"],answer:1,explain:"ค่าเฉลี่ย = (4 + 6 + 8) ÷ 3 = 6"},
+ {type:"choice",q:"ข้อมูล 2, 5, 7, 9, 12 มีมัธยฐานเท่าใด",options:["5","7","8","9"],answer:1,explain:"ข้อมูลเรียงแล้วมี 5 จำนวน มัธยฐานคือค่าตรงกลาง จึงเป็น 7"},
+ {type:"choice",q:"ข้อมูล 3, 4, 4, 6, 8 มีฐานนิยมเท่าใด",options:["3","4","6","8"],answer:1,explain:"ฐานนิยมคือค่าที่ปรากฏบ่อยที่สุด ซึ่งคือ 4"}
+];
+const labels=["ก","ข","ค","ง"];
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.id===b.dataset.tab));if(b.dataset.tab==="take")renderTake();}));
+function getData(){let base=+$("base").value,sp=+$("spread").value;let d=[base-sp,base-sp,base-1,base,base,base+1,base+sp,base+sp].map(x=>Math.max(0,Math.min(10,x)));if($("outlier").checked)d.push(100);return d.sort((a,b)=>a-b)}
+function medianOf(a){let n=a.length;return n%2?a[(n-1)/2]:(a[n/2-1]+a[n/2])/2}
+function modesOf(a){let f={};a.forEach(x=>f[x]=(f[x]||0)+1);let m=Math.max(...Object.values(f));return m===1?"ไม่มีฐานนิยม":Object.keys(f).filter(k=>f[k]===m).join(", ")}
+function drawChart(data){let c=$("chart"),ctx=c.getContext("2d"),w=c.width,h=c.height;ctx.clearRect(0,0,w,h);let max=Math.max(10,...data),pad=45,bottom=h-38,plotH=h-70;ctx.strokeStyle="#dbe5ef";ctx.lineWidth=1;for(let i=0;i<=5;i++){let y=bottom-plotH*i/5;ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(w-15,y);ctx.stroke();ctx.fillStyle="#607086";ctx.font="13px Tahoma";ctx.fillText((max*i/5).toFixed(0),8,y+4)}
+let slot=(w-pad-20)/data.length,bw=Math.min(52,slot*.65);data.forEach((v,i)=>{let bh=v/max*plotH,x=pad+i*slot+(slot-bw)/2,y=bottom-bh;ctx.fillStyle=v===100?"#e76f8a":"#5d9bd3";ctx.fillRect(x,y,bw,bh);ctx.fillStyle="#233044";ctx.font="12px Tahoma";ctx.textAlign="center";ctx.fillText(v,x+bw/2,y-5);ctx.fillText(i+1,x+bw/2,bottom+20)});ctx.textAlign="left";
+const mean=data.reduce((a,b)=>a+b,0)/data.length,med=medianOf(data);[[mean,"#d97706"],[med,"#21865b"]].forEach(([v,col])=>{let y=bottom-v/max*plotH;ctx.strokeStyle=col;ctx.setLineDash([7,5]);ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(w-15,y);ctx.stroke();ctx.setLineDash([])});ctx.fillStyle="#d97706";ctx.fillText("เส้นสีส้ม = ค่าเฉลี่ย",w-220,22);ctx.fillStyle="#21865b";ctx.fillText("เส้นสีเขียว = มัธยฐาน",w-220,42)}
+function updateStats(){let d=getData(),mean=d.reduce((a,b)=>a+b,0)/d.length;$("baseVal").textContent=$("base").value;$("spreadVal").textContent=$("spread").value;$("mean").textContent=mean.toFixed(2).replace(/\.00$/,"");$("median").textContent=medianOf(d);$("mode").textContent=modesOf(d);$("dataText").textContent="ข้อมูลเรียงจากน้อยไปมาก: "+d.join(", ");drawChart(d)}
+["base","spread","outlier"].forEach(id=>$(id).addEventListener("input",updateStats));updateStats();
+const lessonQs=[
+ {q:"ถ้ามีข้อมูล 2, 4, 6 ค่าเฉลี่ยเลขคณิตเท่ากับเท่าใด",opts:["3","4","6","12"],a:1,why:"(2 + 4 + 6) ÷ 3 = 4"},
+ {q:"ข้อมูล 1, 3, 5, 7, 9 มีมัธยฐานเท่าใด",opts:["3","5","7","9"],a:1,why:"ค่าตรงกลางของข้อมูลที่เรียงแล้วคือ 5"},
+ {q:"ข้อมูล 2, 2, 3, 4, 4 มีฐานนิยมกี่ค่า",opts:["ไม่มี","1 ค่า","2 ค่า","3 ค่า"],a:2,why:"ทั้ง 2 และ 4 ปรากฏบ่อยที่สุดเท่ากัน จึงมีฐานนิยม 2 ค่า"}
+];
+$("lessonQuestions").innerHTML=lessonQs.map((q,i)=>`<div class="quiz-item"><b>${i+1}. ${q.q}</b>${q.opts.map((o,j)=>`<label><input type="radio" name="lq${i}" value="${j}"> ${labels[j]}. ${o}</label>`).join("")}<div id="lf${i}" class="small"></div></div>`).join("")+`<button class="btn" id="checkLesson">ตรวจคำตอบ</button>`;
+$("checkLesson").addEventListener("click",()=>lessonQs.forEach((q,i)=>{let v=document.querySelector(`input[name="lq${i}"]:checked`),f=$("lf"+i);f.textContent=v&&+v.value===q.a?"✓ ถูกต้อง — "+q.why:"เฉลย: "+labels[q.a]+". "+q.opts[q.a]+". "+q.why;f.className="feedback "+(v&&+v.value===q.a?"correct":"incorrect")}));
+$("newType").addEventListener("change",()=>{let t=$("newType").value;$("choiceEditor").classList.toggle("hidden",t!=="choice");$("shortEditor").classList.toggle("hidden",t!=="short");$("tfEditor").classList.toggle("hidden",t!=="tf")});
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function renderList(){ $("questionCount").textContent=questions.length+" ข้อ";$("questionList").innerHTML=questions.length?questions.map((q,i)=>`<div class="question-card"><div class="row" style="justify-content:space-between"><b>${i+1}. ${escapeHtml(q.q)}</b><span class="pill">${q.type==="choice"?"ปรนัย":q.type==="short"?"คำตอบสั้น":"ถูก/ผิด"}</span></div>${q.type==="choice"?`<ol type="ก">${q.options.map(o=>`<li>${escapeHtml(o)}</li>`).join("")}</ol>`:""}<div class="small">เฉลย: ${escapeHtml(answerText(q))}${q.explain?" • "+escapeHtml(q.explain):""}</div><button class="btn danger" data-remove="${i}">ลบข้อนี้</button></div>`).join(""):'<p class="small">ยังไม่มีคำถาม เริ่มเพิ่มคำถามได้จากแบบฟอร์มด้านบน</p>';document.querySelectorAll("[data-remove]").forEach(b=>b.addEventListener("click",()=>{questions.splice(+b.dataset.remove,1);renderList();renderTake()}))}
+function answerText(q){if(q.type==="choice")return labels[q.answer]+". "+q.options[q.answer];if(q.type==="tf")return q.answer?"ถูก":"ผิด";return q.answer}
+$("addQuestion").addEventListener("click",()=>{let type=$("newType").value,q=$("newQuestion").value.trim(),explain=$("explanation").value.trim();if(!q){$("builderMessage").textContent="กรุณาพิมพ์คำถามก่อน";return}let item={type,q,explain};if(type==="choice"){let options=[0,1,2,3].map(i=>$("opt"+i).value.trim());if(options.some(x=>!x)){ $("builderMessage").textContent="กรุณากรอกตัวเลือกให้ครบทั้ง 4 ข้อ";return}item.options=options;item.answer=+$("correctChoice").value}else if(type==="short"){item.answer=$("shortAnswer").value.trim();if(!item.answer){$("builderMessage").textContent="กรุณาระบุคำตอบที่ถูกต้อง";return}}else item.answer=$("tfAnswer").value==="true";
+questions.push(item);$("newQuestion").value="";$("explanation").value="";[0,1,2,3].forEach(i=>$("opt"+i).value="");$("shortAnswer").value="";$("builderMessage").textContent="เพิ่มคำถามแล้ว สามารถเพิ่มข้อถัดไปได้";renderList();renderTake()});
+$("resetBuilder").addEventListener("click",()=>{if(confirm("ต้องการเริ่มชุดทดสอบใหม่หรือไม่?")){questions=[];$("testTitle").value="แบบทดสอบใหม่";renderList();renderTake();$("builderMessage").textContent="เริ่มชุดทดสอบใหม่แล้ว"}});
+$("saveTest").addEventListener("click",()=>{try{localStorage.setItem("m2StatisticsTest",JSON.stringify({title:$("testTitle").value,questions}));$("builderMessage").textContent="บันทึกชุดทดสอบในเบราว์เซอร์นี้แล้ว"}catch(e){$("builderMessage").textContent="ไม่สามารถบันทึกได้ในเบราว์เซอร์นี้ กรุณาส่งออกไฟล์ JSON"}});
+$("loadTest").addEventListener("click",()=>{try{let d=JSON.parse(localStorage.getItem("m2StatisticsTest")||"null");if(!d)throw Error();questions=d.questions||[];$("testTitle").value=d.title||"แบบทดสอบ";renderList();renderTake();$("builderMessage").textContent="โหลดชุดทดสอบแล้ว"}catch(e){$("builderMessage").textContent="ยังไม่มีชุดทดสอบที่บันทึกไว้"}});
+$("exportTest").addEventListener("click",()=>{let blob=new Blob([JSON.stringify({title:$("testTitle").value,questions},null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="my-math-test.json";a.click();URL.revokeObjectURL(a.href)});
+$("importFile").addEventListener("change",async e=>{let f=e.target.files[0];if(!f)return;try{let d=JSON.parse(await f.text());if(!Array.isArray(d.questions))throw Error();questions=d.questions;$("testTitle").value=d.title||"แบบทดสอบที่นำเข้า";renderList();renderTake();$("builderMessage").textContent="นำเข้าชุดทดสอบแล้ว"}catch(err){$("builderMessage").textContent="ไฟล์ไม่ถูกต้อง กรุณาเลือกไฟล์ JSON ที่ส่งออกจากหน้านี้"}e.target.value=""});
+function renderTake(){$("takeTitle").textContent=$("testTitle").value.trim()||"แบบทดสอบ";$("takeQuestions").innerHTML=questions.length?questions.map((q,i)=>`<div class="quiz-item"><b>${i+1}. ${escapeHtml(q.q)}</b>${q.type==="choice"?q.options.map((o,j)=>`<label><input type="radio" name="ans${i}" value="${j}"> ${labels[j]}. ${escapeHtml(o)}</label>`).join(""):q.type==="tf"?`<label><input type="radio" name="ans${i}" value="true"> ถูก</label><label><input type="radio" name="ans${i}" value="false"> ผิด</label>`:`<input type="text" id="ans${i}" placeholder="พิมพ์คำตอบของคุณ">`}<div id="fb${i}"></div></div>`).join(""):'<p class="small">ยังไม่มีคำถามในชุดทดสอบ ไปที่ “สร้างแบบทดสอบเอง” เพื่อเพิ่มคำถามได้</p>';$("scoreResult").innerHTML=""}
+$("testTitle").addEventListener("input",()=>{$("takeTitle").textContent=$("testTitle").value.trim()||"แบบทดสอบ"});
+$("gradeTest").addEventListener("click",()=>{if(!questions.length){$("scoreResult").innerHTML='<p class="feedback incorrect">ยังไม่มีคำถามให้ตรวจ</p>';return}let score=0,answered=0;questions.forEach((q,i)=>{let value;if(q.type==="short"){value=$("ans"+i).value.trim().toLocaleLowerCase()}else{let el=document.querySelector(`input[name="ans${i}"]:checked`);value=el?el.value:null}let correct=q.type==="short"?value===String(q.answer).trim().toLocaleLowerCase():q.type==="tf"?value===String(q.answer):value!==null&&+value===q.answer; if(value!==null&&value!=="")answered++;if(correct)score++;let fb=$("fb"+i);fb.className="feedback "+(correct?"correct":"incorrect");fb.innerHTML=(correct?"✓ ตอบถูก":"✗ ยังไม่ถูก")+(q.explain?" — "+escapeHtml(q.explain):"")+"<br><b>เฉลย:</b> "+escapeHtml(answerText(q));});$("scoreResult").innerHTML=`<div class="stat" style="margin-top:16px">คะแนนของคุณ<strong>${score} / ${questions.length}</strong>ตอบแล้ว ${answered} จาก ${questions.length} ข้อ (${Math.round(score/questions.length*100)}%)</div>`;});
+$("clearAnswers").addEventListener("click",()=>{renderTake()});
+renderList();renderTake();
+</script>
+</body>
+</html>
